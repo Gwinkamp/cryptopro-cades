@@ -1,0 +1,15 @@
+{
+  "root": true,
+  "extends": [
+    "@astral/eslint-config-react-ts"
+  ],
+  "env": {
+    "node": true
+  },
+  "ignorePatterns": [
+    "lib",
+    "build",
+    "node_modules",
+    "cadesplugin_api.ts"
+  ]
+}

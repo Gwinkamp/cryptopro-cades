@@ -1,0 +1,10 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - tsc -p ./tsconfig.json --module es2015 --outDir ./lib/esm && tsc -p ./tsconfig.json --module commonjs --outDir ./lib
+      - cp ./LICENSE ./lib/LICENSE
+      - cp ./README.md ./lib/README.md
+    publish:
+      cmd: npm publish ./lib
