@@ -29,3 +29,5 @@ export { findCertificateByThumbprint } from './findCertificateByThumbprint';
 export { findCertificateBySkid } from './findCertificateBySkid';
 
 export { checkPlugin } from './checkPlugin';
+
+export { createCertRequest } from './createCertRequest';

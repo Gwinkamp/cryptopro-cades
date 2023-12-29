@@ -21,6 +21,7 @@ npm install @gwinkamp/cryptopro-cades
 - findCertificateBySkid - поиск по значению из расширения сертификата SubjectKeyId (oid '2.5.29.14').
 - findCertificateByThumprint - поиск сертификата по отпечатку (хэш sha-1).
 - getCertificates - получение списка сертификатов, с возможностью указать тип хранилища для поиска (токены, реестры или всё и сразу).
+- createCertRequest - генерация контейнера закрытого ключа и создание запроса на выпуск сертификата.
 
   - сертификаты имеют в составе базовую информацию:
     - certificateBase64Data

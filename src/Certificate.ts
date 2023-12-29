@@ -3,6 +3,7 @@ import { CAPICOM_ENCODING_TYPE } from './constants';
 import { CryptoError } from './errors';
 import type { ICertificate } from './types';
 import { parseCertificate } from './utils/certificateParser';
+import { type CertificateSubject } from './CertificateSubject';
 
 /**
  * Класс объекта Сертификата для удобной работы.
@@ -12,26 +13,8 @@ import { parseCertificate } from './utils/certificateParser';
 export class Certificate {
   /**
    * Данные о владельце сертификата.
-   * @remarks названия полей должны совпадать с @attributeOids в oids-dictionary.ts
    */
-  subject: {
-    commonName: string | null;
-    surname: string | null;
-    name: string | null;
-    country: string | null;
-    region: string | null;
-    locality: string | null;
-    street: string | null;
-    organization: string | null;
-    department: string | null;
-    post: string | null;
-    ogrnip: string | null;
-    ogrn: string | null;
-    snils: string | null;
-    innLe: string | null;
-    inn: string | null;
-    email: string | null;
-  } = {
+  subject: CertificateSubject = {
     commonName: null,
     surname: null,
     name: null,

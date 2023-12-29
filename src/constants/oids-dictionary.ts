@@ -37,7 +37,7 @@ export const attributeOids = {
   locality: '2.5.4.7',
   region: '2.5.4.8',
   street: '2.5.4.9',
-  organisation: '2.5.4.10',
+  organization: '2.5.4.10',
   department: '2.5.4.11',
   post: '2.5.4.12',
   ogrnip: '1.2.643.100.5',

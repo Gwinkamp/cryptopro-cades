@@ -277,6 +277,32 @@ export enum STORE_LOCATION {
 }
 
 /**
+ * Перечисление, указывающее на характер конечной сущности, для которой предназначен сертификат
+ * @see https://learn.microsoft.com/ru-ru/windows/win32/api/certenroll/ne-certenroll-x509certificateenrollmentcontext
+ */
+export enum X509_CERT_ENROLL_CTX {
+  /**
+   * Не определено.
+   */
+  NONE = 0,
+
+  /**
+   * Сертификат предназначен для конечного пользователя.
+   */
+  USER = 1,
+
+  /**
+   * Сертификат предназначен для компьютера.
+   */
+  MACHINE = 2,
+
+  /**
+   * Сертификат запрашивается администратором, действующим от имени компьютера.
+   */
+  ADMIN_FORCE_MACHINE = 3,
+}
+
+/**
  * The CAPICOM_CERT_INFO_TYPE enumeration type defines what information is to be queried from a certificate.
  * @see https://docs.microsoft.com/en-us/windows/win32/seccrypto/capicom-cert-info-type
  * @type {number}
@@ -405,6 +431,27 @@ export enum CAPICOM_KEY_USAGE {
    * The key can be used to create a digital signature.
    */
   CAPICOM_DIGITAL_SIGNATURE_KEY_USAGE = 128,
+
+  /**
+   * The key can be used for nonrepudiation.
+   * @see https://learn.microsoft.com/en-us/windows/win32/secgloss/n-gly
+   */
+  CAPICOM_NON_REPUDIATION_KEY_USAGE = 64,
+
+  /**
+   * The key can be used to encrypt a key.
+   */
+  CAPICOM_KEY_ENCIPHERMENT_KEY_USAGE = 32,
+
+  /**
+   * The key can be used to encrypt data.
+   */
+  CAPICOM_DATA_ENCIPHERMENT_KEY_USAGE = 16,
+
+  /**
+   * The key can be used for key agreement.
+   */
+  CAPICOM_KEY_AGREEMENT_KEY_USAGE = 8,
 
   // other enums omited.
 }
@@ -960,4 +1007,34 @@ export const enum CRYPTO_OBJECTS {
    * @see https://docs.cryptopro.ru/cades/plugin/certenroll/ccspinformations?id=ccspinformations
    */
   cspInformations = 'X509Enrollment.CCspInformations',
+
+  /**
+   * Объект закрытого ключа.
+   * @see https://docs.cryptopro.ru/cades/plugin/certenroll/cx509privatekey
+   */
+  privateKey = 'X509Enrollment.CX509PrivateKey',
+
+  /**
+   * Объект запроса на выпуск сертификата.
+   * @see https://docs.cryptopro.ru/cades/plugin/certenroll/cx509certificaterequestpkcs10
+   */
+  certificateRequest = 'X509Enrollment.CX509CertificateRequestPkcs10',
+
+  /**
+   * Объект описывает имя субъекта.
+   * @see https://docs.cryptopro.ru/cades/plugin/certenroll/cx500distinguishedname
+   */
+  distinguishedName = 'X509Enrollment.CX500DistinguishedName',
+
+  /**
+   * Объект расширения в запросе на сертификат.
+   * @see https://docs.cryptopro.ru/cades/plugin/certenroll/cx509extensionkeyusage
+   */
+  keyUsageExtension = 'X509Enrollment.CX509ExtensionKeyUsage',
+
+  /**
+   * Объект, предназначенный для создания запросов на сертификат.
+   * @see https://docs.cryptopro.ru/cades/plugin/certenroll/cx509enrollment
+   */
+  enrollment = 'X509Enrollment.CX509Enrollment',
 }

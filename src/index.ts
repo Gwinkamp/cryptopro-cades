@@ -10,4 +10,6 @@ export * from './types';
 
 export * from './Certificate';
 
+export * from './CertificateSubject';
+
 export * from './PluginConfig';
