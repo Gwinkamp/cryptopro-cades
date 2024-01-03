@@ -150,7 +150,7 @@ function normalizeCertRequest(certRequest: string): string {
 
   result = result.replace('-----BEGIN CERTIFICATE-----', '');
   result = result.replace('-----END CERTIFICATE-----', '');
-  result = result.replaceAll('\n', '');
+  result = result.replace(/(\r\n|\n|\r)/gm, "");
 
   return (
     '-----BEGIN NEW CERTIFICATE REQUEST-----' +
