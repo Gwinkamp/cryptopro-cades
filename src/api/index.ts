@@ -31,3 +31,5 @@ export { findCertificateBySkid } from './findCertificateBySkid';
 export { checkPlugin } from './checkPlugin';
 
 export { createCertRequest } from './createCertRequest';
+
+export { installCertificate } from './installCertificate';

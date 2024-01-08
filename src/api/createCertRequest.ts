@@ -1,11 +1,11 @@
 import { type CX509PrivateKey } from '../types/cadesplugin/CX509PrivateKey';
 import {
   AT_KEYEXCHANGE,
+  attributeOids,
   CAPICOM_KEY_USAGE,
   CRYPTO_OBJECTS,
   X509_CERT_ENROLL_CTX,
-  XCN_CRYPT_STRING_BASE64HEADER,
-  attributeOids,
+  ENCODING_TYPE,
 } from '../constants';
 import { CryptoError } from '../errors';
 import { type ICryptoProvider } from '../types';
@@ -31,13 +31,10 @@ export function createCertRequest(
 ): Promise<string> {
   return afterPluginLoaded(async () => {
     let privateKey: CX509PrivateKey;
-
     try {
       privateKey = await createObject(CRYPTO_OBJECTS.privateKey);
     } catch (e) {
-      const errorMessage = `Ошибка при создании объекта ${CRYPTO_OBJECTS.privateKey}.`;
-
-      throw CryptoError.create('CBP-12', errorMessage, e);
+      throw CryptoError.create('CBP-12', `Ошибка при создании объекта ${ CRYPTO_OBJECTS.privateKey }.`, e);
     }
 
     await setCryptoProperty(privateKey, 'ProviderName', provider.ProviderName);
@@ -45,13 +42,10 @@ export function createCertRequest(
     await setCryptoProperty(privateKey, 'KeySpec', AT_KEYEXCHANGE);
 
     let certRequest: ICX509CertificateRequestPkcs10;
-
     try {
       certRequest = await createObject(CRYPTO_OBJECTS.certificateRequest);
     } catch (e) {
-      const errorMessage = `Ошибка при создании объекта ${CRYPTO_OBJECTS.certificateRequest}.`;
-
-      throw CryptoError.create('CBP-13', errorMessage, e);
+      throw CryptoError.create('CBP-13', `Ошибка при создании объекта ${ CRYPTO_OBJECTS.certificateRequest }.`, e);
     }
 
     certRequest.InitializeFromPrivateKey(
@@ -61,13 +55,10 @@ export function createCertRequest(
     );
 
     let distinguishedName: ICX500DistinguishedName;
-
     try {
       distinguishedName = await createObject(CRYPTO_OBJECTS.distinguishedName);
     } catch (e) {
-      const errorMessage = `Ошибка при создании объекта ${CRYPTO_OBJECTS.distinguishedName}.`;
-
-      throw CryptoError.create('CBP-13', errorMessage, e);
+      throw CryptoError.create('CBP-13', `Ошибка при создании объекта ${ CRYPTO_OBJECTS.distinguishedName }.`, e);
     }
 
     const subjectString = buildSubjectString(subject);
@@ -76,20 +67,17 @@ export function createCertRequest(
     await setCryptoProperty(certRequest, 'Subject', distinguishedName);
 
     let keyUsageExtension: ICX509ExtensionKeyUsage;
-
     try {
       keyUsageExtension = await createObject(CRYPTO_OBJECTS.keyUsageExtension);
     } catch (e) {
-      const errorMessage = `Ошибка при создании объекта ${CRYPTO_OBJECTS.keyUsageExtension}.`;
-
-      throw CryptoError.create('CBP-13', errorMessage, e);
+      throw CryptoError.create('CBP-13', `Ошибка при создании объекта ${ CRYPTO_OBJECTS.keyUsageExtension }.`, e);
     }
 
     await keyUsageExtension.InitializeEncode(
       CAPICOM_KEY_USAGE.CAPICOM_DATA_ENCIPHERMENT_KEY_USAGE |
-        CAPICOM_KEY_USAGE.CAPICOM_DIGITAL_SIGNATURE_KEY_USAGE |
-        CAPICOM_KEY_USAGE.CAPICOM_NON_REPUDIATION_KEY_USAGE |
-        CAPICOM_KEY_USAGE.CAPICOM_KEY_ENCIPHERMENT_KEY_USAGE,
+      CAPICOM_KEY_USAGE.CAPICOM_DIGITAL_SIGNATURE_KEY_USAGE |
+      CAPICOM_KEY_USAGE.CAPICOM_NON_REPUDIATION_KEY_USAGE |
+      CAPICOM_KEY_USAGE.CAPICOM_KEY_ENCIPHERMENT_KEY_USAGE,
     );
 
     const extensions = await unwrap(certRequest.X509Extensions);
@@ -97,18 +85,19 @@ export function createCertRequest(
     await extensions.Add(keyUsageExtension);
 
     let enroll: ICX509Enrollment;
-
     try {
       enroll = await createObject(CRYPTO_OBJECTS.enrollment);
     } catch (e) {
-      const errorMessage = `Ошибка при создании объекта ${CRYPTO_OBJECTS.enrollment}.`;
-
-      throw CryptoError.create('CBP-13', errorMessage, e);
+      throw CryptoError.create('CBP-13', `Ошибка при создании объекта ${ CRYPTO_OBJECTS.enrollment }.`, e);
     }
 
-    await enroll.InitializeFromRequest(certRequest);
-
-    const data = await enroll.CreateRequest(XCN_CRYPT_STRING_BASE64HEADER);
+    let data: string;
+    try {
+      await enroll.InitializeFromRequest(certRequest);
+      data = await enroll.CreateRequest(ENCODING_TYPE.XCN_CRYPT_STRING_BASE64HEADER);
+    } catch (e) {
+      throw CryptoError.createCadesError(e, 'Ошибка при создании запроса на выпуск сертификата.');
+    }
 
     return normalizeCertRequest(data);
   })();
@@ -129,12 +118,12 @@ function buildSubjectString(subject: CertificateSubject): string {
     }
 
     if (oid === undefined) {
-      const errorMessage = `Неизвестный атрибут сертификата "${key}".`;
+      const errorMessage = `Неизвестный атрибут сертификата "${ key }".`;
 
       throw CryptoError.create('CBP-7', errorMessage, null, errorMessage);
     }
 
-    properties.push(`${oid}="${value}"`);
+    properties.push(`${ oid }="${ value }"`);
   }
 
   return properties.join(',');
@@ -150,7 +139,7 @@ function normalizeCertRequest(certRequest: string): string {
 
   result = result.replace('-----BEGIN CERTIFICATE-----', '');
   result = result.replace('-----END CERTIFICATE-----', '');
-  result = result.replace(/(\r\n|\n|\r)/gm, "");
+  result = result.replace(/(\r\n|\n|\r)/gm, '');
 
   return (
     '-----BEGIN NEW CERTIFICATE REQUEST-----' +

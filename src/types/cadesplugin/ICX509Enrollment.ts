@@ -1,6 +1,7 @@
 import type { WithOptionalPromise } from '../WithOptionalPromise';
 
 import { type ICX509CertificateRequestPkcs10 } from './ICX509CertificateRequestPkcs10';
+import { ENCODING_TYPE, INSTALL_RESPONSE_RESTRICTION_FLAGS, X509_CERT_ENROLL_CTX } from "../../constants";
 
 /**
  * Объект, предназначенный для создания запросов на сертификат и установки полученных сертификатов.
@@ -21,4 +22,25 @@ export interface ICX509Enrollment {
    * @returns тело запроса на выпуск сертификата.
    */
   CreateRequest(encoding: number): WithOptionalPromise<string>;
+
+  /**
+   * Инициализирует объект перед установкой полученного сертификата.
+   * @param context перечисление, указывающее на характер конечной сущности, для которой предназначен сертификат
+   */
+  Initialize(context: X509_CERT_ENROLL_CTX): WithOptionalPromise<void>;
+
+  /**
+   * Устанавливает полученный сертификат в хранилище
+   * @param restrictionFlags перечисление, указывающее тип сертификатов, которые можно установить
+   * @param certificateBody тело сертификата, которое необходимо установить
+   * @param encoding тип кодировки тела сертификата
+   * @param password необязательный пароль для установки сертификата.
+   * Это может быть значение NULL или пустая строка, указывающая на то, что пароль не используется.
+   */
+  InstallResponse(
+    restrictionFlags: INSTALL_RESPONSE_RESTRICTION_FLAGS,
+    certificateBody: string,
+    encoding: ENCODING_TYPE,
+    password: string | null
+  ): WithOptionalPromise<void>;
 }

@@ -787,7 +787,7 @@ export enum CADESCOM_HASH_ALGORITHM {
   CADESCOM_HASH_ALGORITHM_CP_GOST_3411_2012_256 = 101,
 
   /**
-   * 	Алгоритм ГОСТ Р 34.11-2012 с длиной ключа 512 бит.
+   *    Алгоритм ГОСТ Р 34.11-2012 с длиной ключа 512 бит.
    */
   CADESCOM_HASH_ALGORITHM_CP_GOST_3411_2012_512 = 102,
 
@@ -807,13 +807,37 @@ export enum CADESCOM_HASH_ALGORITHM {
   CADESCOM_HASH_ALGORITHM_CP_GOST_3411_2012_512_HMAC = 112,
 }
 
-export const CADESCOM_AllowNone = 0;
+/**
+ * Перечисление флагов, указывающих тип сертификатов, которые можно установить
+ * @see https://learn.microsoft.com/ru-ru/windows/win32/api/certenroll/nf-certenroll-ix509enrollment-installresponse?redirectedfrom=MSDN
+ */
+export enum INSTALL_RESPONSE_RESTRICTION_FLAGS {
+  /**
+   * Не устанавливать недоверенные сертификаты или сертификаты, для которых нет соответствующего запроса.
+   */
+  AllowNone = 0,
 
-export const CADESCOM_AllowNoOutstandingRequest = 0x1;
+  /**
+   * Создать закрытый ключ из ответа сертификата, а не из фиктивного сертификата.
+   * Это делает фиктивный сертификат необязательным.
+   * Если это значение не задано, фиктивный сертификат должен существовать и из него извлекается закрытый ключ.
+   */
+  AllowNoOutstandingRequest = 1,
 
-export const CADESCOM_AllowUntrustedCertificate = 0x2;
+  /**
+   * Установить недоверенные конечные сущности и сертификаты центра сертификации.
+   * Сертификаты центра сертификации включают корневые и подчиненные сертификаты ЦС.
+   * Сертификаты конечных сущностей устанавливаются в личное хранилище, а сертификаты ЦС — в хранилище центра сертификации.
+   */
+  AllowUntrustedCertificate = 2,
 
-export const CADESCOM_AllowUntrustedRoot = 0x4;
+  /**
+   * Выполняет то же действие, что и флаг AllowUntrustedCertificate,
+   * но также устанавливает сертификат, даже если невозможно создать цепочку сертификатов,
+   * так как корневой каталог не является доверенным
+   */
+  AllowUntrustedRoot = 4,
+}
 
 export const CADESCOM_SkipInstallToStore = 0x10000000;
 
@@ -869,7 +893,34 @@ export const enum CADESCOM_MEDIA_TYPE {
   MEDIA_TYPE_SCARD = 0x00000008,
 }
 
-export const XCN_CRYPT_STRING_BASE64HEADER = 0;
+/**
+ * Перечисление указывает тип кодировки, применяемой к массиву байтов для отображения.
+ * @see https://learn.microsoft.com/ru-ru/windows/win32/api/certenroll/ne-certenroll-encodingtype
+ */
+export enum ENCODING_TYPE {
+  XCN_CRYPT_STRING_BASE64HEADER = 0,
+  XCN_CRYPT_STRING_BASE64 = 0x1,
+  XCN_CRYPT_STRING_BINARY = 0x2,
+  XCN_CRYPT_STRING_BASE64REQUESTHEADER = 0x3,
+  XCN_CRYPT_STRING_HEX = 0x4,
+  XCN_CRYPT_STRING_HEXASCII = 0x5,
+  XCN_CRYPT_STRING_BASE64_ANY = 0x6,
+  XCN_CRYPT_STRING_ANY = 0x7,
+  XCN_CRYPT_STRING_HEX_ANY = 0x8,
+  XCN_CRYPT_STRING_BASE64X509CRLHEADER = 0x9,
+  XCN_CRYPT_STRING_HEXADDR = 0xa,
+  XCN_CRYPT_STRING_HEXASCIIADDR = 0xb,
+  XCN_CRYPT_STRING_HEXRAW = 0xc,
+  XCN_CRYPT_STRING_BASE64URI = 0xd,
+  XCN_CRYPT_STRING_ENCODEMASK = 0xff,
+  XCN_CRYPT_STRING_CHAIN = 0x100,
+  XCN_CRYPT_STRING_TEXT = 0x200,
+  XCN_CRYPT_STRING_PERCENTESCAPE = 0x8000000,
+  XCN_CRYPT_STRING_HASHDATA = 0x10000000,
+  XCN_CRYPT_STRING_STRICT = 0x20000000,
+  XCN_CRYPT_STRING_NOCRLF = 0x40000000,
+  XCN_CRYPT_STRING_NOCR = 0x80000000
+}
 
 export const AT_KEYEXCHANGE = 1;
 
