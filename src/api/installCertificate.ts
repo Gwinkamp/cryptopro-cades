@@ -1,9 +1,14 @@
-import { CRYPTO_OBJECTS, ENCODING_TYPE, INSTALL_RESPONSE_RESTRICTION_FLAGS, X509_CERT_ENROLL_CTX } from "../constants";
-import { afterPluginLoaded } from "./internal/afterPluginLoaded";
-import type { ICX509Enrollment } from "../types/cadesplugin/ICX509Enrollment";
-import { createObject } from "./createObject";
-import { CryptoError } from "../errors";
+import {
+  CRYPTO_OBJECTS,
+  ENCODING_TYPE,
+  INSTALL_RESPONSE_RESTRICTION_FLAGS,
+  X509_CERT_ENROLL_CTX,
+} from '../constants';
+import type { ICX509Enrollment } from '../types/cadesplugin/ICX509Enrollment';
+import { CryptoError } from '../errors';
 
+import { afterPluginLoaded } from './internal/afterPluginLoaded';
+import { createObject } from './createObject';
 
 /**
  * Установить сертификат в хранилище
@@ -20,26 +25,41 @@ export function installCertificate(
 ): Promise<void> {
   return afterPluginLoaded(async () => {
     let enroll: ICX509Enrollment;
+
     try {
       enroll = await createObject(CRYPTO_OBJECTS.enrollment);
     } catch (e) {
-      throw CryptoError.create('CBP-14', `Ошибка при создании объекта ${ CRYPTO_OBJECTS.enrollment }.`, e);
+      throw CryptoError.create(
+        'CBP-14',
+        `Ошибка при создании объекта ${CRYPTO_OBJECTS.enrollment}.`,
+        e,
+      );
     }
 
     try {
       await enroll.Initialize(X509_CERT_ENROLL_CTX.USER);
     } catch (e) {
-      throw CryptoError.create('CBP-14', `Ошибка инициализации объекта ${ CRYPTO_OBJECTS.enrollment }.`, e);
+      throw CryptoError.create(
+        'CBP-14',
+        `Ошибка инициализации объекта ${CRYPTO_OBJECTS.enrollment}.`,
+        e,
+      );
     }
 
     try {
-      await enroll.InstallResponse(restrictionFlags, certBody, encoding, password);
+      await enroll.InstallResponse(
+        restrictionFlags,
+        certBody,
+        encoding,
+        password,
+      );
     } catch (e) {
       throw CryptoError.create(
         'CBP-14',
         'Ошибка установки сертификата. ' +
-        'Возможно необходимо установить корневой сертификат тестового УЦ в Доверенные корневые сертификаты',
-        e)
+          'Возможно необходимо установить корневой сертификат тестового УЦ в Доверенные корневые сертификаты',
+        e,
+      );
     }
   })();
 }

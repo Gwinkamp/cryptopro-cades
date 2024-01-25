@@ -1,7 +1,11 @@
 import type { WithOptionalPromise } from '../WithOptionalPromise';
+import {
+  type ENCODING_TYPE,
+  type INSTALL_RESPONSE_RESTRICTION_FLAGS,
+  type X509_CERT_ENROLL_CTX,
+} from '../../constants';
 
 import { type ICX509CertificateRequestPkcs10 } from './ICX509CertificateRequestPkcs10';
-import { ENCODING_TYPE, INSTALL_RESPONSE_RESTRICTION_FLAGS, X509_CERT_ENROLL_CTX } from "../../constants";
 
 /**
  * Объект, предназначенный для создания запросов на сертификат и установки полученных сертификатов.
@@ -41,6 +45,6 @@ export interface ICX509Enrollment {
     restrictionFlags: INSTALL_RESPONSE_RESTRICTION_FLAGS,
     certificateBody: string,
     encoding: ENCODING_TYPE,
-    password: string | null
+    password: string | null,
   ): WithOptionalPromise<void>;
 }

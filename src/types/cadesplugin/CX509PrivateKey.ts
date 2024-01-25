@@ -13,17 +13,17 @@ export type CX509PrivateKey = {
   /**
    * Позволяет указать, существует ли закрытый ключ в контейнере или его необходимо создать. Значение True означает, что ключ существует.
    */
-  Existing: WithOptionalPromise<boolean>;
+  readonly Existing: WithOptionalPromise<boolean>;
 
   /**
    * Имя криптопровайдера.
    */
-  ProviderName: WithOptionalPromise<string>;
+  readonly ProviderName: WithOptionalPromise<string>;
 
   /**
    * Уникальное имя контейнера.
    */
-  UniqueContainerName: WithOptionalPromise<string>;
+  readonly UniqueContainerName: WithOptionalPromise<string>;
 
   // тут есть еще много других методов и свойств. см по ссылке выше
 };
