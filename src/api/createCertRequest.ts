@@ -5,6 +5,7 @@ import {
   CRYPTO_OBJECTS,
   ENCODING_TYPE,
   X509_CERT_ENROLL_CTX,
+  X509_PRIVATE_KEY_EXPORT_FLAGS,
   attributeOids,
 } from '../constants';
 import { CryptoError } from '../errors';
@@ -14,6 +15,7 @@ import { type ICX500DistinguishedName } from '../types/cadesplugin/ICX500Disting
 import { type CertificateSubject } from '../CertificateSubject';
 import { type ICX509ExtensionKeyUsage } from '../types/cadesplugin/ICX509ExtensionKeyUsage';
 import { type ICX509Enrollment } from '../types/cadesplugin/ICX509Enrollment';
+import { type CreateContainerOptions } from '../types/CreateContainerOptions';
 
 import { unwrap } from './internal/unwrap';
 import { setCryptoProperty } from './internal/setCryptoProperty';
@@ -69,14 +71,12 @@ function normalizeCertRequest(certRequest: string): string {
  * Создать запрос на выпуск сертификата
  * @param provider криптопровайдер
  * @param subject данные владельца сертификата
- * @param containerName имя контейнера закрытого ключа
- * @param pin пин-код для контейнера закрытого ключа
+ * @param containerOpts параметры контейнера закрытого ключа
  */
 export function createCertRequest(
   provider: ICryptoProvider,
   subject: CertificateSubject,
-  containerName?: string,
-  pin?: string,
+  containerOpts: CreateContainerOptions,
 ): Promise<string> {
   return afterPluginLoaded(async () => {
     let privateKey: CX509PrivateKey;
@@ -95,12 +95,24 @@ export function createCertRequest(
     await setCryptoProperty(privateKey, 'ProviderType', provider.ProviderType);
     await setCryptoProperty(privateKey, 'KeySpec', AT_KEYEXCHANGE);
 
-    if (containerName) {
-      await setCryptoProperty(privateKey, 'ContainerName', containerName);
+    if (containerOpts.containerName) {
+      await setCryptoProperty(
+        privateKey,
+        'ContainerName',
+        containerOpts.containerName,
+      );
     }
 
-    if (pin) {
-      await setCryptoProperty(privateKey, 'Pin', pin);
+    if (containerOpts.pin) {
+      await setCryptoProperty(privateKey, 'Pin', containerOpts.pin);
+    }
+
+    if (containerOpts.allowExport) {
+      await setCryptoProperty(
+        privateKey,
+        'ExportPolicy',
+        X509_PRIVATE_KEY_EXPORT_FLAGS.XCN_NCRYPT_ALLOW_EXPORT_FLAG,
+      );
     }
 
     let certRequest: ICX509CertificateRequestPkcs10;

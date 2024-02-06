@@ -922,6 +922,27 @@ export enum ENCODING_TYPE {
   XCN_CRYPT_STRING_NOCR = 0x80000000,
 }
 
+/**
+ * Перечисление, определяющее политику экспорта для закрытого ключа.
+ * @see https://learn.microsoft.com/ru-ru/windows/win32/api/certenroll/ne-certenroll-x509privatekeyexportflags
+ */
+export enum X509_PRIVATE_KEY_EXPORT_FLAGS {
+  /** Экспорт запрещен. Это значение по умолчанию. */
+  XCN_NCRYPT_ALLOW_EXPORT_NONE = 0,
+
+  /** Закрытый ключ можно экспортировать. */
+  XCN_NCRYPT_ALLOW_EXPORT_FLAG = 0x1,
+
+  /** Закрытый ключ можно экспортировать в виде открытого текста. */
+  XCN_NCRYPT_ALLOW_PLAINTEXT_EXPORT_FLAG = 0x2,
+
+  /** Закрытый ключ можно экспортировать один раз для архивации. */
+  XCN_NCRYPT_ALLOW_ARCHIVING_FLAG = 0x4,
+
+  /** Закрытый ключ можно экспортировать один раз в виде открытого текста для архивации. */
+  XCN_NCRYPT_ALLOW_PLAINTEXT_ARCHIVING_FLAG = 0x8,
+}
+
 export const AT_KEYEXCHANGE = 1;
 
 export const AT_SIGNATURE = 2;
