@@ -24,6 +24,27 @@ import { setCryptoProperty } from './internal/setCryptoProperty';
 import { unwrap } from './internal/unwrap';
 
 /**
+ * Экранировать значение атрибута сертификата
+ * @param value значение атрибута сертификата
+ * @returns экранированное значение атрибута сертификата
+ */
+function escapeSubjectValue(value: string): string {
+  const result = new Array<string>();
+
+  for (let i = 0; i < value.length; i++) {
+    // для экранирования кавычек <"> нужно их продублировать
+    if (value.charAt(i) == '"') {
+      result.push(value.charAt(i));
+      result.push(value.charAt(i));
+    } else {
+      result.push(value.charAt(i));
+    }
+  }
+
+  return result.join('');
+}
+
+/**
  * Построить строку с данными владельца сертификата
  * @param subject данные владельца сертификата
  */
@@ -43,7 +64,7 @@ function buildSubjectString(subject: CertificateSubject): string {
       throw CryptoError.create('CBP-7', errorMessage, null, errorMessage);
     }
 
-    properties.push(`${oid}=${JSON.stringify(value)}`);
+    properties.push(`${oid}="${escapeSubjectValue(value)}"`);
   }
 
   return properties.join(',');
