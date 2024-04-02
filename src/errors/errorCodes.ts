@@ -140,6 +140,12 @@ export const CRYPTO_PRO_ERRORS = Object.freeze([
       'Доступ к сертификату заблокирован, так как исчерпано число попыток ввести правильный PIN-код.',
     // original: 'The card cannot be accessed because the maximum number of PIN entry attempts has been reached. (0x8010006C)'
   },
+  {
+    code: '0x80092023',
+    message:
+      'Строка содержит недопустимый ключ атрибута имени X500, oid, value или разделитель.',
+    // original: The string contains an invalid X500 name attribute key, oid, value or delimiter. (0x80092023)
+  },
 ]);
 
 /**

@@ -6,6 +6,7 @@ import {
 } from '../constants';
 import type { ICX509Enrollment } from '../types/cadesplugin/ICX509Enrollment';
 import { CryptoError } from '../errors';
+import { outputDebug } from '../utils';
 
 import { afterPluginLoaded } from './internal/afterPluginLoaded';
 import { createObject } from './createObject';
@@ -24,43 +25,54 @@ export function installCertificate(
   password: string = '',
 ): Promise<void> {
   return afterPluginLoaded(async () => {
-    let enroll: ICX509Enrollment;
+    const logData = [];
+
+    logData.push({
+      certBody,
+      encoding,
+      restrictionFlags,
+      password,
+    });
 
     try {
-      enroll = await createObject(CRYPTO_OBJECTS.enrollment);
-    } catch (e) {
-      throw CryptoError.create(
-        'CBP-14',
-        `Ошибка при создании объекта ${CRYPTO_OBJECTS.enrollment}.`,
-        e,
-      );
-    }
+      let enroll: ICX509Enrollment;
 
-    try {
-      await enroll.Initialize(X509_CERT_ENROLL_CTX.USER);
-    } catch (e) {
-      throw CryptoError.create(
-        'CBP-14',
-        `Ошибка инициализации объекта ${CRYPTO_OBJECTS.enrollment}.`,
-        e,
-      );
-    }
+      try {
+        enroll = await createObject(CRYPTO_OBJECTS.enrollment);
+      } catch (error) {
+        throw CryptoError.createCadesError(
+          error,
+          `Ошибка при создании объекта ${CRYPTO_OBJECTS.enrollment}.`,
+        );
+      }
 
-    try {
-      await enroll.InstallResponse(
-        restrictionFlags,
-        certBody,
-        encoding,
-        password,
-      );
-    } catch (e) {
-      throw CryptoError.create(
-        'CBP-14',
-        'Ошибка установки сертификата.',
-        e,
-        'Ошибка установки сертификата. ' +
-          'Возможно необходимо установить корневой сертификат тестового УЦ в Доверенные корневые сертификаты.',
-      );
+      try {
+        await enroll.Initialize(X509_CERT_ENROLL_CTX.USER);
+      } catch (error) {
+        throw CryptoError.createCadesError(
+          error,
+          `Ошибка инициализации объекта ${CRYPTO_OBJECTS.enrollment}.`,
+        );
+      }
+
+      try {
+        await enroll.InstallResponse(
+          restrictionFlags,
+          certBody,
+          encoding,
+          password,
+        );
+      } catch (error) {
+        throw CryptoError.createCadesError(
+          error,
+          'Ошибка установки сертификата.',
+        );
+      }
+    } catch (error) {
+      logData.push({ error });
+      throw error;
+    } finally {
+      outputDebug('installCertificate >>', logData);
     }
   })();
 }
